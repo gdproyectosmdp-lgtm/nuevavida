@@ -1,0 +1,1161 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#0d0d1a">
+<title>Nueva Vida v7.4</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap');
+
+:root {
+  --bg: #0d0d1a;
+  --bg2: #13132a;
+  --bg3: #1a1a35;
+  --card: #16163a;
+  --border: #2a2a55;
+  --text: #e8e8f8;
+  --text2: #8888bb;
+  --accent: #6c63ff;
+  --accent2: #a855f7;
+  --green: #22c55e;
+  --red: #ef4444;
+  --orange: #f97316;
+  --yellow: #eab308;
+  --blue: #3b82f6;
+  --pink: #ec4899;
+  --teal: #14b8a6;
+  --cyan: #06b6d4;
+  --radius: 14px;
+  --radius-sm: 9px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+body { font-family: 'Nunito', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; overflow-x: hidden; font-size: 15px; }
+
+/* HEADER */
+#header { background: var(--bg2); border-bottom: 1px solid var(--border); padding: 12px 14px; position: sticky; top: 0; z-index: 100; display: flex; align-items: center; gap: 8px; }
+#header-title { font-size: 19px; font-weight: 900; color: var(--accent); flex: 1; }
+#header-title span { color: var(--text2); font-weight: 600; font-size: 12px; display: block; }
+.hbtn { background: var(--bg3); border: 1px solid var(--border); color: var(--text2); border-radius: var(--radius-sm); padding: 7px 11px; font-size: 17px; cursor: pointer; }
+.hbtn:active { transform: scale(.9); }
+
+/* BOTTOM NAV */
+#bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: var(--bg2); border-top: 1px solid var(--border); display: flex; z-index: 100; }
+.bnav-btn { flex: 1; padding: 9px 4px 11px; background: none; border: none; color: var(--text2); font-size: 20px; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 2px; }
+.bnav-btn span { font-size: 9px; font-weight: 700; font-family: 'Nunito', sans-serif; }
+.bnav-btn.active { color: var(--accent); }
+.bnav-btn:active { transform: scale(.88); }
+
+/* CONTENT */
+#main-content { padding-bottom: 75px; }
+.screen { display: none; flex-direction: column; padding: 14px; gap: 12px; }
+.screen.active { display: flex; }
+.sec-title { font-size: 12px; font-weight: 800; color: var(--text2); text-transform: uppercase; letter-spacing: 1px; }
+
+/* CAPTURA RAPIDA */
+#quick-capture { background: var(--card); border: 1px solid var(--accent); border-radius: var(--radius); padding: 12px; }
+#quick-capture .sec-title { color: var(--accent); margin-bottom: 8px; }
+.qc-textarea { width: 100%; background: var(--bg3); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 10px 12px; color: var(--text); font-family: 'Nunito', sans-serif; font-size: 14px; resize: none; min-height: 80px; }
+.qc-textarea:focus { outline: none; border-color: var(--accent); }
+.qc-row { display: flex; gap: 7px; margin-top: 7px; align-items: flex-start; }
+.qc-btns { display: flex; flex-direction: column; gap: 5px; }
+.qc-btn { background: var(--bg3); border: 1px solid var(--border); color: var(--text2); border-radius: var(--radius-sm); padding: 8px 10px; font-size: 15px; cursor: pointer; }
+.qc-btn.primary { background: var(--accent); border-color: var(--accent); color: white; }
+.qc-btn:active { transform: scale(.88); }
+#qc-folder-select { width: 100%; margin-top: 7px; background: var(--bg3); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 8px 10px; color: var(--text); font-family: 'Nunito', sans-serif; font-size: 13px; }
+
+/* FOLDERS */
+#folders-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 9px; }
+.folder-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 13px 11px; cursor: pointer; position: relative; overflow: hidden; transition: transform .15s; }
+.folder-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; border-radius: var(--radius) var(--radius) 0 0; }
+.folder-card:active { transform: scale(.94); }
+.folder-icon { font-size: 26px; margin-bottom: 5px; }
+.folder-name { font-size: 12px; font-weight: 800; line-height: 1.2; }
+.folder-count { font-size: 11px; color: var(--text2); margin-top: 2px; font-weight: 600; }
+.c-orange::before { background: var(--orange); } .c-blue::before { background: var(--blue); }
+.c-teal::before { background: var(--teal); } .c-green::before { background: var(--green); }
+.c-red::before { background: var(--red); } .c-yellow::before { background: var(--yellow); }
+.c-pink::before { background: var(--pink); } .c-accent::before { background: var(--accent); }
+.c-cyan::before { background: var(--cyan); } .c-emerald::before { background: #10b981; }
+.c-violet::before { background: #8b5cf6; } .c-purple::before { background: var(--accent2); }
+
+/* FOLDER DETAIL */
+#folder-detail { display: none; flex-direction: column; padding-bottom: 75px; }
+#folder-header { display: flex; align-items: center; gap: 9px; padding: 12px 14px 9px; background: var(--bg2); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 50; }
+#folder-back { background: var(--bg3); border: 1px solid var(--border); color: var(--text2); border-radius: var(--radius-sm); padding: 7px 11px; font-size: 15px; cursor: pointer; }
+#folder-title { font-size: 17px; font-weight: 900; flex: 1; }
+#folder-add-btn { background: var(--accent); border: none; color: white; border-radius: var(--radius-sm); padding: 7px 13px; font-size: 19px; cursor: pointer; }
+#folder-toolbar { display: flex; gap: 7px; padding: 9px 14px; background: var(--bg2); border-bottom: 1px solid var(--border); flex-wrap: wrap; }
+.toolbar-btn { background: var(--bg3); border: 1px solid var(--border); color: var(--text2); border-radius: 8px; padding: 6px 11px; font-size: 12px; font-weight: 700; cursor: pointer; font-family: 'Nunito', sans-serif; display: flex; align-items: center; gap: 4px; }
+.toolbar-btn:active { transform: scale(.9); }
+.toolbar-btn.danger { color: var(--red); border-color: var(--red); }
+.toolbar-btn.active-sel { background: var(--accent); color: white; border-color: var(--accent); }
+#folder-entries { padding: 12px 14px; display: flex; flex-direction: column; gap: 9px; }
+
+/* ENTRY CARD */
+.entry-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 11px 13px; animation: fadeIn .2s ease; position: relative; }
+.entry-card.selected { border-color: var(--accent); background: rgba(108,99,255,.12); }
+@keyframes fadeIn { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:translateY(0); } }
+.entry-checkbox { position: absolute; top: 11px; right: 11px; width: 20px; height: 20px; border-radius: 50%; border: 2px solid var(--border); cursor: pointer; display: none; align-items: center; justify-content: center; font-size: 11px; background: var(--bg3); }
+.entry-checkbox.visible { display: flex; }
+.entry-checkbox.checked { background: var(--accent); border-color: var(--accent); color: white; }
+.entry-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; margin-top: 5px; }
+.entry-top { display: flex; gap: 8px; align-items: flex-start; }
+.entry-text { flex: 1; font-size: 14px; line-height: 1.5; word-break: break-word; padding-right: 8px; }
+.entry-meta { font-size: 11px; color: var(--text2); margin-top: 5px; display: flex; gap: 8px; flex-wrap: wrap; }
+.entry-actions { display: flex; gap: 5px; margin-top: 7px; flex-wrap: wrap; }
+.entry-btn { background: var(--bg3); border: 1px solid var(--border); color: var(--text2); border-radius: 7px; padding: 5px 9px; font-size: 12px; font-weight: 700; cursor: pointer; font-family: 'Nunito', sans-serif; }
+.entry-btn:active { transform: scale(.9); }
+.entry-btn.del { color: var(--red); border-color: var(--red); }
+.entry-btn.sav { color: var(--green); border-color: var(--green); }
+.entry-edit-area { width: 100%; background: var(--bg3); border: 1px solid var(--accent); border-radius: var(--radius-sm); padding: 8px; color: var(--text); font-family: 'Nunito', sans-serif; font-size: 14px; resize: vertical; min-height: 70px; margin-top: 6px; }
+.entry-edit-area:focus { outline: none; }
+
+/* ADJUNTOS */
+.attach-preview { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+.attach-item { background: var(--bg3); border: 1px solid var(--border); border-radius: 8px; padding: 5px 9px; font-size: 12px; color: var(--cyan); display: flex; align-items: center; gap: 5px; cursor: pointer; }
+.attach-item img { width: 40px; height: 40px; object-fit: cover; border-radius: 5px; }
+
+/* MODAL */
+#modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.75); z-index: 200; align-items: flex-end; justify-content: center; backdrop-filter: blur(4px); }
+#modal-overlay.open { display: flex; }
+#modal { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius) var(--radius) 0 0; width: 100%; max-width: 480px; max-height: 92vh; overflow-y: auto; padding: 18px 14px 30px; animation: slideUp .22s ease; }
+@keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+.modal-title { font-size: 17px; font-weight: 900; margin-bottom: 12px; }
+.modal-input { width: 100%; background: var(--bg3); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 10px 11px; color: var(--text); font-family: 'Nunito', sans-serif; font-size: 14px; margin-bottom: 9px; }
+.modal-input:focus { outline: none; border-color: var(--accent); }
+.modal-textarea { width: 100%; background: var(--bg3); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 10px 11px; color: var(--text); font-family: 'Nunito', sans-serif; font-size: 14px; margin-bottom: 9px; resize: vertical; min-height: 90px; }
+.modal-textarea:focus { outline: none; border-color: var(--accent); }
+.modal-label { font-size: 12px; color: var(--text2); font-weight: 700; margin-bottom: 3px; }
+.modal-btns { display: flex; gap: 7px; margin-top: 5px; }
+.modal-btn { flex: 1; padding: 11px; border-radius: var(--radius-sm); border: none; font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 14px; cursor: pointer; }
+.modal-btn.primary { background: var(--accent); color: white; }
+.modal-btn.secondary { background: var(--bg3); color: var(--text2); border: 1px solid var(--border); }
+.modal-btn.danger { background: var(--red); color: white; }
+.modal-btn:active { transform: scale(.95); }
+
+/* ATTACH BUTTONS ROW */
+.attach-row { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 9px; }
+.attach-btn { background: var(--bg3); border: 1px solid var(--border); color: var(--text2); border-radius: 8px; padding: 7px 12px; font-size: 13px; font-weight: 700; cursor: pointer; font-family: 'Nunito', sans-serif; display: flex; align-items: center; gap: 5px; }
+.attach-btn:active { transform: scale(.9); }
+
+/* VOICE BTN */
+.voice-btn { background: var(--bg3); border: 1px solid var(--border); color: var(--text2); border-radius: 8px; padding: 8px 10px; font-size: 15px; cursor: pointer; }
+.voice-btn.recording { background: rgba(239,68,68,.2); border-color: var(--red); color: var(--red); animation: pulse 1s infinite; }
+@keyframes pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.07)} }
+
+/* BÚSQUEDA */
+#search-bar { display: flex; gap: 7px; background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 9px 12px; }
+#search-input { flex: 1; background: none; border: none; color: var(--text); font-family: 'Nunito', sans-serif; font-size: 14px; }
+#search-input:focus { outline: none; }
+#search-input::placeholder { color: var(--text2); }
+
+/* CLIMA */
+.clima-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px; }
+.sol-badge { display: inline-flex; align-items: center; gap: 6px; padding: 7px 13px; border-radius: 20px; font-size: 13px; font-weight: 800; }
+.sol-badge.danger { background: rgba(239,68,68,.15); border: 1px solid var(--red); color: var(--red); }
+.sol-badge.warning { background: rgba(234,179,8,.15); border: 1px solid var(--yellow); color: var(--yellow); }
+.sol-badge.safe { background: rgba(34,197,94,.15); border: 1px solid var(--green); color: var(--green); }
+.task-item { display: flex; align-items: flex-start; gap: 9px; background: var(--bg3); border-radius: var(--radius-sm); padding: 9px 11px; cursor: pointer; }
+.task-check { width: 19px; height: 19px; border-radius: 50%; border: 2px solid var(--border); flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 11px; margin-top: 1px; }
+.task-item.done .task-check { background: var(--green); border-color: var(--green); }
+.task-item.done .task-text { text-decoration: line-through; color: var(--text2); }
+.task-text { font-size: 13px; flex: 1; }
+.add-task-row { display: flex; gap: 7px; margin-top: 9px; }
+.add-task-input { flex: 1; background: var(--bg3); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 9px 11px; color: var(--text); font-family: 'Nunito', sans-serif; font-size: 13px; }
+.add-task-input:focus { outline: none; border-color: var(--accent); }
+.add-task-btn { background: var(--accent); border: none; color: white; border-radius: var(--radius-sm); padding: 0 14px; font-size: 18px; cursor: pointer; }
+
+/* SEÑALES */
+.signal-card { background: var(--card); border: 1px solid #4c1d95; border-radius: var(--radius); padding: 13px; position: relative; overflow: hidden; }
+.signal-card::after { content: '✨'; position: absolute; top: 9px; right: 11px; font-size: 18px; opacity: .35; }
+.signal-type { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: var(--accent2); margin-bottom: 3px; }
+.signal-text { font-size: 13px; line-height: 1.5; }
+.signal-date { font-size: 10px; color: var(--text2); margin-top: 5px; }
+
+/* MEJORAS */
+.mejora-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 13px; }
+.mejora-tag { display: inline-block; padding: 2px 7px; border-radius: 5px; font-size: 10px; font-weight: 800; text-transform: uppercase; margin-bottom: 5px; }
+.mejora-tag.pending { background: rgba(234,179,8,.15); color: var(--yellow); border: 1px solid var(--yellow); }
+.mejora-tag.done { background: rgba(34,197,94,.15); color: var(--green); border: 1px solid var(--green); }
+.mejora-title { font-size: 13px; font-weight: 700; }
+.mejora-desc { font-size: 12px; color: var(--text2); margin-top: 3px; line-height: 1.4; }
+
+/* CONFIG */
+.config-section { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+.config-item { display: flex; align-items: center; padding: 13px 14px; border-bottom: 1px solid var(--border); gap: 10px; }
+.config-item:last-child { border-bottom: none; }
+.config-icon { font-size: 19px; width: 26px; text-align: center; }
+.config-info { flex: 1; }
+.config-label { font-size: 13px; font-weight: 700; }
+.config-sub { font-size: 11px; color: var(--text2); margin-top: 1px; }
+.config-btn { background: var(--bg3); border: 1px solid var(--border); color: var(--text2); border-radius: 7px; padding: 6px 11px; font-family: 'Nunito', sans-serif; font-size: 12px; font-weight: 700; cursor: pointer; white-space: nowrap; }
+.config-btn:active { transform: scale(.9); }
+.config-input { background: var(--bg3); border: 1px solid var(--border); color: var(--text); border-radius: 7px; padding: 6px 10px; font-family: 'Nunito', sans-serif; font-size: 12px; width: 150px; }
+.config-input:focus { outline: none; border-color: var(--accent); }
+
+/* IA PANEL */
+#ia-panel { display: none; position: fixed; inset: 0; z-index: 300; background: rgba(0,0,0,.85); flex-direction: column; align-items: center; justify-content: flex-end; backdrop-filter: blur(5px); }
+#ia-panel.open { display: flex; }
+#ia-box { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius) var(--radius) 0 0; width: 100%; max-width: 480px; padding: 18px 14px 30px; animation: slideUp .22s ease; }
+.ia-title { font-size: 16px; font-weight: 900; color: var(--accent); margin-bottom: 10px; }
+#ia-input { width: 100%; background: var(--bg3); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 11px; color: var(--text); font-family: 'Nunito', sans-serif; font-size: 14px; resize: none; min-height: 90px; margin-bottom: 9px; }
+#ia-input:focus { outline: none; border-color: var(--accent); }
+.ia-btns { display: flex; gap: 7px; }
+#ia-send { flex: 1; background: linear-gradient(135deg, var(--accent), var(--accent2)); border: none; color: white; border-radius: var(--radius-sm); padding: 11px; font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 14px; cursor: pointer; }
+#ia-close { background: var(--bg3); border: 1px solid var(--border); color: var(--text2); border-radius: var(--radius-sm); padding: 11px 14px; cursor: pointer; font-size: 15px; }
+#ia-voice-btn { background: var(--bg3); border: 1px solid var(--border); color: var(--text2); border-radius: var(--radius-sm); padding: 11px 13px; cursor: pointer; font-size: 15px; }
+#ia-voice-btn.recording { background: rgba(239,68,68,.2); border-color: var(--red); color: var(--red); animation: pulse 1s infinite; }
+#ia-response { background: var(--bg3); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 11px; margin-top: 9px; font-size: 13px; line-height: 1.6; display: none; }
+#ia-response.show { display: block; }
+.dot-anim { animation: blink 1.2s infinite; }
+.dot-anim:nth-child(2) { animation-delay: .2s; }
+.dot-anim:nth-child(3) { animation-delay: .4s; }
+@keyframes blink { 0%,100%{opacity:.2} 50%{opacity:1} }
+
+/* FAB */
+#ia-fab { position: fixed; bottom: 82px; right: 14px; width: 50px; height: 50px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), var(--accent2)); border: none; font-size: 22px; cursor: pointer; box-shadow: 0 4px 18px rgba(108,99,255,.5); z-index: 90; display: flex; align-items: center; justify-content: center; }
+#ia-fab:active { transform: scale(.88); }
+
+/* TOAST */
+#toast { position: fixed; bottom: 88px; left: 50%; transform: translateX(-50%) translateY(16px); background: var(--bg2); border: 1px solid var(--border); border-radius: 9px; padding: 9px 18px; font-size: 13px; font-weight: 700; z-index: 500; opacity: 0; transition: all .25s; pointer-events: none; white-space: nowrap; }
+#toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* TOOLTIP */
+.tooltip { position: relative; display: inline-block; }
+.tooltip-text { visibility: hidden; background: var(--bg3); color: var(--text); text-align: center; border-radius: 7px; padding: 5px 9px; position: absolute; z-index: 1000; bottom: 125%; left: 50%; transform: translateX(-50%); font-size: 11px; white-space: nowrap; border: 1px solid var(--border); opacity: 0; transition: opacity .2s; pointer-events: none; }
+.tooltip:hover .tooltip-text, .tooltip:focus .tooltip-text { visibility: visible; opacity: 1; }
+
+/* REMINDER / LINK */
+.reminder-badge { display: inline-flex; align-items: center; gap: 3px; background: var(--bg3); border: 1px solid var(--yellow); border-radius: 5px; padding: 2px 6px; font-size: 10px; color: var(--yellow); }
+.link-badge { display: inline-flex; align-items: center; gap: 3px; background: var(--bg3); border: 1px solid var(--cyan); border-radius: 5px; padding: 2px 6px; font-size: 10px; color: var(--cyan); text-decoration: none; cursor: pointer; }
+
+/* EMPTY STATE */
+.empty-state { text-align: center; padding: 35px 18px; color: var(--text2); }
+.empty-state .icon { font-size: 44px; margin-bottom: 10px; }
+.empty-state p { font-size: 13px; line-height: 1.5; }
+
+/* RESTORE POINTS */
+.restore-item { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 12px 13px; display: flex; align-items: center; gap: 10px; }
+.restore-info { flex: 1; }
+.restore-date { font-size: 13px; font-weight: 700; }
+.restore-desc { font-size: 11px; color: var(--text2); margin-top: 2px; }
+
+/* AYUDA */
+.help-section { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+.help-item { padding: 13px 14px; border-bottom: 1px solid var(--border); }
+.help-item:last-child { border-bottom: none; }
+.help-q { font-size: 13px; font-weight: 800; color: var(--accent); margin-bottom: 4px; }
+.help-a { font-size: 12px; color: var(--text2); line-height: 1.5; }
+</style>
+</head>
+<body>
+
+<div id="header">
+  <div id="header-title">🌟 Nueva Vida <span id="header-sub">Tu organizador personal</span></div>
+  <button class="hbtn tooltip" onclick="openSearch()" title="Buscar"><span class="tooltip-text">Buscar</span>🔍</button>
+  <button class="hbtn tooltip" onclick="showIAPanel()"><span class="tooltip-text">Asistente IA</span>🤖</button>
+</div>
+
+<div id="main-content">
+
+  <!-- INICIO -->
+  <div id="screen-home" class="screen active">
+    <div id="quick-capture">
+      <div class="sec-title">⚡ Captura Rápida</div>
+      <div class="qc-row">
+        <textarea class="qc-textarea" id="qc-text" placeholder="Escribí o dictá..."></textarea>
+        <div class="qc-btns">
+          <button class="voice-btn" onclick="startVoice('qc-text','qc-voice')" id="qc-voice">🎤</button>
+          <button class="qc-btn primary tooltip" onclick="saveQuick()"><span class="tooltip-text">Guardar entrada</span>💾</button>
+        </div>
+      </div>
+      <select id="qc-folder-select"><option value="">— Carpeta automática (IA) —</option></select>
+    </div>
+    <div class="sec-title">📁 Mis Carpetas</div>
+    <div id="folders-grid"></div>
+  </div>
+
+  <!-- CARPETA DETALLE -->
+  <div id="folder-detail">
+    <div id="folder-header">
+      <button id="folder-back" onclick="closeFolderDetail()">← Volver</button>
+      <div id="folder-title">Carpeta</div>
+      <button id="folder-add-btn" class="tooltip" onclick="openAddEntry()"><span class="tooltip-text">Nueva entrada</span>+</button>
+    </div>
+    <div id="folder-toolbar">
+      <button class="toolbar-btn tooltip" onclick="toggleSelectMode()" id="select-mode-btn"><span class="tooltip-text">Seleccionar entradas</span>☑️ Seleccionar</button>
+      <button class="toolbar-btn danger tooltip" onclick="deleteSelected()" id="delete-selected-btn" style="display:none"><span class="tooltip-text">Borrar seleccionados</span>🗑️ Borrar selección</button>
+      <button class="toolbar-btn danger tooltip" onclick="deleteAllEntries()" id="delete-all-btn" style="display:none"><span class="tooltip-text">Borrar todos los mensajes</span>🗑️ Borrar todos</button>
+      <button class="toolbar-btn danger tooltip" id="delete-folder-btn" onclick="deleteCurrentFolder()"><span class="tooltip-text">Eliminar esta carpeta</span>🗂️ Borrar carpeta</button>
+    </div>
+    <div id="folder-entries"></div>
+  </div>
+
+  <!-- BÚSQUEDA -->
+  <div id="screen-search" class="screen">
+    <div id="search-bar">
+      <input type="text" id="search-input" placeholder="Buscar en todas las carpetas..." />
+      <button onclick="doSearch()" style="background:var(--accent);border:none;color:white;border-radius:7px;padding:6px 11px;cursor:pointer;font-size:14px;">🔍</button>
+      <button class="voice-btn" onclick="startVoice('search-input','search-voice')" id="search-voice">🎤</button>
+    </div>
+    <div id="search-results" style="display:flex;flex-direction:column;gap:9px;"></div>
+  </div>
+
+  <!-- CLIMA -->
+  <div id="screen-clima" class="screen">
+    <div class="sec-title">☀️ Protección Solar</div>
+    <div class="clima-card">
+      <div class="sol-badge warning" id="sol-badge">⏳ Calculando...</div>
+      <div style="margin-top:9px;font-size:12px;color:var(--text2);line-height:1.5;" id="sol-consejo"></div>
+    </div>
+    <div class="sec-title">✅ Tareas del Día</div>
+    <div class="clima-card">
+      <div id="clima-tasks" style="display:flex;flex-direction:column;gap:7px;margin-bottom:10px;"></div>
+      <div class="add-task-row">
+        <input class="add-task-input" id="new-task-input" placeholder="Nueva tarea..." />
+        <button class="add-task-btn" onclick="addClimaTask()">+</button>
+        <button class="voice-btn" onclick="startVoice('new-task-input','task-voice')" id="task-voice">🎤</button>
+      </div>
+    </div>
+    <div class="sec-title">🏠 Tareas de Interior</div>
+    <div class="clima-card">
+      <div id="indoor-tasks" style="display:flex;flex-direction:column;gap:7px;margin-bottom:10px;"></div>
+      <div class="add-task-row">
+        <input class="add-task-input" id="new-indoor-input" placeholder="Tarea interior..." />
+        <button class="add-task-btn" onclick="addIndoorTask()">+</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SEÑALES -->
+  <div id="screen-signals" class="screen">
+    <div class="sec-title">🔮 Señales & Sincronías</div>
+    <button class="modal-btn primary" style="padding:10px;" onclick="openAddSignal()">+ Registrar señal</button>
+    <div id="signals-list" style="display:flex;flex-direction:column;gap:9px;"></div>
+  </div>
+
+  <!-- MEJORAS -->
+  <div id="screen-mejoras" class="screen">
+    <div class="sec-title">🛠️ Mejoras Pendientes</div>
+    <button class="modal-btn primary" style="padding:10px;" onclick="openAddMejora()">+ Nueva mejora</button>
+    <div id="mejoras-list" style="display:flex;flex-direction:column;gap:9px;"></div>
+  </div>
+
+  <!-- CONFIG -->
+  <div id="screen-config" class="screen">
+    <div class="sec-title">⚙️ Configuración</div>
+
+    <div class="config-section">
+      <div class="config-item">
+        <div class="config-icon">🔑</div>
+        <div class="config-info"><div class="config-label">API Key de IA</div><div class="config-sub">Para clasificación y asistente inteligente</div></div>
+        <input type="password" class="config-input" id="cfg-apikey" placeholder="sk-ant-..." oninput="saveConfig()" />
+      </div>
+      <div class="config-item">
+        <div class="config-icon">👤</div>
+        <div class="config-info"><div class="config-label">Tu nombre</div></div>
+        <input type="text" class="config-input" id="cfg-name" placeholder="Gastón" oninput="saveConfig()" />
+      </div>
+      <div class="config-item">
+        <div class="config-icon">🌆</div>
+        <div class="config-info"><div class="config-label">Tu ciudad</div></div>
+        <input type="text" class="config-input" id="cfg-city" placeholder="Mar del Plata" oninput="saveConfig()" />
+      </div>
+      <div class="config-item">
+        <div class="config-icon">☀️</div>
+        <div class="config-info"><div class="config-label">Alerta solar</div><div class="config-sub">Protección UV activa</div></div>
+        <button class="config-btn" id="cfg-sol-btn" onclick="toggleSolProtect()">Activada ✓</button>
+      </div>
+    </div>
+
+    <div class="sec-title" style="margin-top:6px;">💾 Datos y Backup</div>
+    <div class="config-section">
+      <div class="config-item">
+        <div class="config-icon">📤</div>
+        <div class="config-info"><div class="config-label">Exportar backup</div><div class="config-sub">Descarga JSON con todos tus datos</div></div>
+        <button class="config-btn" onclick="exportBackup()">Exportar</button>
+      </div>
+      <div class="config-item">
+        <div class="config-icon">📥</div>
+        <div class="config-info"><div class="config-label">Importar backup</div><div class="config-sub">Restaura sin perder datos</div></div>
+        <button class="config-btn" onclick="document.getElementById('import-file').click()">Importar</button>
+      </div>
+      <div class="config-item">
+        <div class="config-icon">🔄</div>
+        <div class="config-info"><div class="config-label">Puntos de restauración</div><div class="config-sub">Volver a una versión anterior</div></div>
+        <button class="config-btn" onclick="showRestorePoints()">Ver</button>
+      </div>
+      <div class="config-item">
+        <div class="config-icon">🗑️</div>
+        <div class="config-info"><div class="config-label">Borrar TODOS los datos</div><div class="config-sub" style="color:var(--red);">Irreversible</div></div>
+        <button class="config-btn" style="color:var(--red);border-color:var(--red);" onclick="confirmDeleteAll()">Borrar</button>
+      </div>
+    </div>
+
+    <div class="sec-title" style="margin-top:6px;">❓ Ayuda</div>
+    <div class="help-section">
+      <div class="help-item"><div class="help-q">¿Cómo guardo una nota?</div><div class="help-a">Usá la Captura Rápida en Inicio, escribí o dictá por micrófono y tocá 💾. Se clasifica sola con IA o elegís la carpeta.</div></div>
+      <div class="help-item"><div class="help-q">¿Cómo funciona el micrófono?</div><div class="help-a">Tocá el botón 🎤 rojo, hablá, y el texto aparece automáticamente. Podés usar el micrófono tantas veces como quieras.</div></div>
+      <div class="help-item"><div class="help-q">¿Cómo adjunto fotos o links?</div><div class="help-a">Al agregar una entrada, tocá 📎 para adjuntar fotos, 🔗 para links o 📄 para archivos.</div></div>
+      <div class="help-item"><div class="help-q">¿Cómo borro entradas?</div><div class="help-a">Dentro de una carpeta tocá "Seleccionar", elegí las entradas y tocá "Borrar selección". O tocá 🗑️ en cada entrada individual.</div></div>
+      <div class="help-item"><div class="help-q">¿Cómo uso el asistente IA?</div><div class="help-a">Tocá el botón 🤖 y dictá o escribí lo que necesitás. Primero configurá tu API Key en Configuración.</div></div>
+      <div class="help-item"><div class="help-q">¿Mis datos están seguros?</div><div class="help-a">Sí. Todo se guarda solo en tu celular, no en ningún servidor. Hacé backups regulares desde Configuración.</div></div>
+    </div>
+
+    <div style="text-align:center;padding:16px 0;color:var(--text2);font-size:11px;">Nueva Vida v7.4 · Datos en tu dispositivo · gdproyectosmdp@gmail.com</div>
+  </div>
+
+</div><!-- /main-content -->
+
+<div id="bottom-nav">
+  <button class="bnav-btn active" onclick="showScreen('home')" id="bnav-home">🏠<span>Inicio</span></button>
+  <button class="bnav-btn" onclick="showScreen('clima')" id="bnav-clima">☀️<span>Clima</span></button>
+  <button class="bnav-btn" onclick="showScreen('signals')" id="bnav-signals">🔮<span>Señales</span></button>
+  <button class="bnav-btn" onclick="showScreen('mejoras')" id="bnav-mejoras">🛠️<span>Mejoras</span></button>
+  <button class="bnav-btn" onclick="showScreen('config')" id="bnav-config">⚙️<span>Config</span></button>
+</div>
+
+<button id="ia-fab" onclick="showIAPanel()">🤖</button>
+
+<div id="modal-overlay" onclick="closeModal()">
+  <div id="modal" onclick="e=>e.stopPropagation()">
+    <div class="modal-title" id="modal-title"></div>
+    <div id="modal-body"></div>
+  </div>
+</div>
+
+<div id="ia-panel">
+  <div id="ia-box">
+    <div class="ia-title">🤖 Asistente IA — Nueva Vida</div>
+    <textarea id="ia-input" placeholder="Escribí o dictá... La IA guarda y clasifica automáticamente."></textarea>
+    <div class="ia-btns">
+      <button id="ia-send" onclick="sendToIA()">Enviar ✨</button>
+      <button id="ia-voice-btn" onclick="startVoiceIA()">🎤</button>
+      <button id="ia-close" onclick="closeIAPanel()">✕</button>
+    </div>
+    <div id="ia-response"></div>
+  </div>
+</div>
+
+<div id="toast"></div>
+<input type="file" id="import-file" accept=".json" style="display:none" onchange="importBackup(event)">
+<input type="file" id="attach-file-input" accept="*/*" style="display:none" onchange="handleFileAttach(event)">
+<input type="file" id="attach-photo-input" accept="image/*" style="display:none" onchange="handlePhotoAttach(event)">
+
+<script>
+const STORAGE_KEY = 'nv3';
+const PROTECTED_FOLDERS = ['trabajo','economia','para_ordenar','multimedia','compras','salud'];
+let data = loadData();
+let currentFolder = null;
+let selectMode = false;
+let selectedIds = new Set();
+let currentEntryAttachments = [];
+let voiceRec = null;
+let iaVoiceRec = null;
+let iaVoiceActive = false;
+
+const FOLDERS = [
+  { id:'obra',      name:'Obra / Casa',          icon:'🏗️', color:'c-orange' },
+  { id:'autos',     name:'Autos',                icon:'🚗', color:'c-blue' },
+  { id:'hogar',     name:'Hogar',                icon:'🏠', color:'c-teal' },
+  { id:'economia',  name:'Mi Economía',          icon:'💰', color:'c-green' },
+  { id:'salud',     name:'Salud',                icon:'❤️', color:'c-red' },
+  { id:'proyectos', name:'Proyectos / Inventos', icon:'🔧', color:'c-yellow' },
+  { id:'musica',    name:'Música / DJ',          icon:'🎧', color:'c-pink' },
+  { id:'espiritualidad', name:'Espiritualidad',  icon:'🙏', color:'c-accent' },
+  { id:'herramientas', name:'Herramientas',      icon:'🛠️', color:'c-cyan' },
+  { id:'compras',   name:'Compras',              icon:'🛒', color:'c-emerald' },
+  { id:'suenos',    name:'Sueños',               icon:'🌙', color:'c-violet' },
+  { id:'senales',   name:'🔮 Señales & Sincronías', icon:'✨', color:'c-purple' },
+];
+
+const FOLDER_COLORS = {
+  'c-orange':'#f97316','c-blue':'#3b82f6','c-teal':'#14b8a6','c-green':'#22c55e',
+  'c-red':'#ef4444','c-yellow':'#eab308','c-pink':'#ec4899','c-accent':'#6c63ff',
+  'c-cyan':'#06b6d4','c-emerald':'#10b981','c-violet':'#8b5cf6','c-purple':'#a855f7'
+};
+
+function loadData() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) {
+      const d = JSON.parse(raw);
+      if (!d.restorePoints) d.restorePoints = [];
+      if (!d.customFolders) d.customFolders = [];
+      return d;
+    }
+  } catch(e) {}
+  return { entries:[], climaTasks:[], indoorTasks:[], signals:[], mejoras:[], restorePoints:[], customFolders:[],
+    config:{ apikey:'', name:'Gastón', city:'Mar del Plata', solProtect:true } };
+}
+
+function saveData(createRestorePoint = false) {
+  if (createRestorePoint) {
+    if (!data.restorePoints) data.restorePoints = [];
+    const snap = JSON.stringify(data);
+    data.restorePoints.unshift({ date: new Date().toISOString(), snapshot: snap, desc: 'Punto automático' });
+    if (data.restorePoints.length > 10) data.restorePoints = data.restorePoints.slice(0, 10);
+  }
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); } catch(e) {}
+}
+
+function getAllFolders() {
+  return [...FOLDERS, ...(data.customFolders || []).map(f => ({ id:f.id, name:f.name, icon:f.icon||'📁', color:'c-accent' }))];
+}
+
+function init() {
+  renderFolders(); renderFolderSelect(); loadConfig();
+  initClima(); renderSignals(); renderMejoras();
+  checkReminders(); setInterval(checkReminders, 60000); setInterval(updateSolStatus, 60000);
+}
+
+function showScreen(name) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.bnav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('folder-detail').style.display = 'none';
+  if (name === 'home') { document.getElementById('screen-home').classList.add('active'); document.getElementById('bnav-home').classList.add('active'); renderFolders(); }
+  else if (name === 'clima') { document.getElementById('screen-clima').classList.add('active'); document.getElementById('bnav-clima').classList.add('active'); updateSolStatus(); renderClimaTasks(); }
+  else if (name === 'signals') { document.getElementById('screen-signals').classList.add('active'); document.getElementById('bnav-signals').classList.add('active'); renderSignals(); }
+  else if (name === 'mejoras') { document.getElementById('screen-mejoras').classList.add('active'); document.getElementById('bnav-mejoras').classList.add('active'); renderMejoras(); }
+  else if (name === 'config') { document.getElementById('screen-config').classList.add('active'); document.getElementById('bnav-config').classList.add('active'); }
+}
+
+function openSearch() {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('folder-detail').style.display = 'none';
+  document.querySelectorAll('.bnav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('screen-search').classList.add('active');
+  setTimeout(() => document.getElementById('search-input').focus(), 100);
+}
+
+function renderFolders() {
+  const grid = document.getElementById('folders-grid');
+  grid.innerHTML = '';
+  getAllFolders().forEach(f => {
+    const count = (data.entries||[]).filter(e => e.folder === f.id).length;
+    const card = document.createElement('div');
+    card.className = `folder-card ${f.color}`;
+    card.innerHTML = `<div class="folder-icon">${f.icon}</div><div class="folder-name">${f.name}</div><div class="folder-count">${count} entrada${count!==1?'s':''}</div>`;
+    card.onclick = () => openFolder(f.id);
+    grid.appendChild(card);
+  });
+  // Botón agregar carpeta
+  const addCard = document.createElement('div');
+  addCard.className = 'folder-card';
+  addCard.style.cssText = 'border-style:dashed;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:5px;';
+  addCard.innerHTML = `<div style="font-size:26px;">➕</div><div class="folder-name" style="text-align:center;color:var(--text2);">Nueva carpeta</div>`;
+  addCard.onclick = openAddFolder;
+  grid.appendChild(addCard);
+}
+
+function renderFolderSelect() {
+  const sel = document.getElementById('qc-folder-select');
+  sel.innerHTML = '<option value="">— Carpeta automática (IA) —</option>';
+  getAllFolders().forEach(f => { const o = document.createElement('option'); o.value = f.id; o.textContent = f.icon+' '+f.name; sel.appendChild(o); });
+}
+
+function openFolder(folderId) {
+  currentFolder = folderId;
+  selectMode = false; selectedIds.clear();
+  const f = getAllFolders().find(x => x.id === folderId);
+  document.getElementById('folder-title').textContent = f ? f.icon+' '+f.name : folderId;
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('folder-detail').style.display = 'flex';
+  document.getElementById('folder-detail').style.flexDirection = 'column';
+  // Mostrar/ocultar botón borrar carpeta
+  const isProtected = PROTECTED_FOLDERS.includes(folderId) || FOLDERS.find(x => x.id === folderId);
+  document.getElementById('delete-folder-btn').style.display = isProtected ? 'none' : 'flex';
+  updateSelectUI();
+  renderFolderEntries();
+}
+
+function closeFolderDetail() {
+  document.getElementById('folder-detail').style.display = 'none';
+  selectMode = false; selectedIds.clear();
+  showScreen('home');
+}
+
+function toggleSelectMode() {
+  selectMode = !selectMode;
+  selectedIds.clear();
+  updateSelectUI();
+  renderFolderEntries();
+}
+
+function updateSelectUI() {
+  const btn = document.getElementById('select-mode-btn');
+  const delSel = document.getElementById('delete-selected-btn');
+  const delAll = document.getElementById('delete-all-btn');
+  if (selectMode) {
+    btn.classList.add('active-sel'); btn.textContent = '✕ Cancelar';
+    delSel.style.display = 'flex'; delAll.style.display = 'flex';
+  } else {
+    btn.classList.remove('active-sel'); btn.innerHTML = '☑️ Seleccionar';
+    delSel.style.display = 'none'; delAll.style.display = 'none';
+  }
+}
+
+function renderFolderEntries() {
+  const container = document.getElementById('folder-entries');
+  container.innerHTML = '';
+  const entries = (data.entries||[]).filter(e => e.folder === currentFolder).reverse();
+  if (entries.length === 0) {
+    container.innerHTML = `<div class="empty-state"><div class="icon">📭</div><p>No hay entradas todavía.<br>Tocá + para agregar.</p></div>`;
+    return;
+  }
+  entries.forEach(e => {
+    const f = getAllFolders().find(x => x.id === e.folder);
+    const dotColor = f ? FOLDER_COLORS[f.color]||'#6c63ff' : '#6c63ff';
+    const card = document.createElement('div');
+    card.className = 'entry-card' + (selectedIds.has(e.id) ? ' selected' : '');
+    card.id = 'entry-'+e.id;
+
+    let meta = `<span>${formatDate(e.date)}</span>`;
+    if (e.reminder && !e.reminderDone) meta += `<span class="reminder-badge">⏰ ${formatDate(e.reminder)}</span>`;
+    if (e.link) meta += `<a class="link-badge" href="${e.link}" target="_blank">🔗 Abrir</a>`;
+
+    let attachHtml = '';
+    if (e.attachments && e.attachments.length > 0) {
+      attachHtml = '<div class="attach-preview">';
+      e.attachments.forEach(a => {
+        if (a.type === 'image') attachHtml += `<div class="attach-item"><img src="${a.data}" /></div>`;
+        else if (a.type === 'link') attachHtml += `<a class="attach-item link-badge" href="${a.url}" target="_blank">🔗 ${a.name||'Link'}</a>`;
+        else attachHtml += `<div class="attach-item">📄 ${a.name||'Archivo'}</div>`;
+      });
+      attachHtml += '</div>';
+    }
+
+    const checkbox = selectMode ? `<div class="entry-checkbox visible${selectedIds.has(e.id)?' checked':''}" onclick="toggleSelect('${e.id}')">${selectedIds.has(e.id)?'✓':''}</div>` : '';
+
+    card.innerHTML = `
+      ${checkbox}
+      <div class="entry-top">
+        <div class="entry-dot" style="background:${dotColor}"></div>
+        <div class="entry-text" id="text-${e.id}">${escapeHtml(e.text)}</div>
+      </div>
+      ${attachHtml}
+      <div class="entry-meta">${meta}</div>
+      <div class="entry-actions">
+        <button class="entry-btn tooltip" onclick="editEntry('${e.id}')"><span class="tooltip-text">Editar texto</span>✏️ Editar</button>
+        <button class="entry-btn tooltip" onclick="addReminder('${e.id}')"><span class="tooltip-text">Poner recordatorio</span>⏰</button>
+        <button class="entry-btn tooltip" onclick="speakEntry('${e.id}')"><span class="tooltip-text">Leer en voz alta</span>🔊</button>
+        <button class="entry-btn del tooltip" onclick="deleteEntry('${e.id}')"><span class="tooltip-text">Borrar esta entrada</span>🗑️</button>
+      </div>
+    `;
+    if (selectMode) card.onclick = () => toggleSelect(e.id);
+    container.appendChild(card);
+  });
+}
+
+function toggleSelect(id) {
+  if (selectedIds.has(id)) selectedIds.delete(id);
+  else selectedIds.add(id);
+  renderFolderEntries();
+}
+
+function deleteSelected() {
+  if (selectedIds.size === 0) { showToast('⚠️ No seleccionaste nada'); return; }
+  if (!confirm(`¿Borrar ${selectedIds.size} entrada(s) seleccionada(s)?`)) return;
+  saveData(true);
+  data.entries = data.entries.filter(e => !selectedIds.has(e.id));
+  saveData(); selectedIds.clear(); selectMode = false;
+  updateSelectUI(); renderFolderEntries(); renderFolders();
+  showToast(`🗑️ Borradas ${selectedIds.size} entradas`);
+}
+
+function deleteAllEntries() {
+  const count = (data.entries||[]).filter(e => e.folder === currentFolder).length;
+  if (!confirm(`¿Borrar TODOS los ${count} mensajes de esta carpeta?`)) return;
+  saveData(true);
+  data.entries = data.entries.filter(e => e.folder !== currentFolder);
+  saveData(); selectMode = false; updateSelectUI(); renderFolderEntries(); renderFolders();
+  showToast('🗑️ Todos los mensajes borrados');
+}
+
+function deleteCurrentFolder() {
+  if (!currentFolder) return;
+  if (FOLDERS.find(f => f.id === currentFolder)) { showToast('⚠️ No se puede borrar esta carpeta'); return; }
+  if (!confirm('¿Borrar esta carpeta y todos sus mensajes?')) return;
+  saveData(true);
+  data.entries = data.entries.filter(e => e.folder !== currentFolder);
+  data.customFolders = (data.customFolders||[]).filter(f => f.id !== currentFolder);
+  saveData(); closeFolderDetail();
+  showToast('🗂️ Carpeta eliminada');
+}
+
+function editEntry(id) {
+  const entry = data.entries.find(e => e.id === id);
+  if (!entry) return;
+  const textEl = document.getElementById('text-'+id);
+  const card = document.getElementById('entry-'+id);
+  const actionsEl = card.querySelector('.entry-actions');
+  const area = document.createElement('textarea');
+  area.className = 'entry-edit-area'; area.value = entry.text;
+  textEl.replaceWith(area);
+  actionsEl.innerHTML = `
+    <button class="entry-btn sav" onclick="saveEdit('${id}')">💾 Guardar</button>
+    <button class="entry-btn" onclick="renderFolderEntries()">✕ Cancelar</button>
+  `;
+}
+
+function saveEdit(id) {
+  const card = document.getElementById('entry-'+id);
+  const area = card.querySelector('.entry-edit-area');
+  const entry = data.entries.find(e => e.id === id);
+  if (entry && area) { entry.text = area.value.trim(); saveData(); renderFolderEntries(); showToast('✅ Guardado'); }
+}
+
+function deleteEntry(id) {
+  if (!confirm('¿Borrar esta entrada?')) return;
+  saveData(true);
+  data.entries = data.entries.filter(e => e.id !== id);
+  saveData(); renderFolderEntries(); renderFolders();
+  showToast('🗑️ Borrado');
+}
+
+function addReminder(id) {
+  openModal('⏰ Recordatorio', `
+    <div class="modal-label">Fecha y hora</div>
+    <input type="datetime-local" class="modal-input" id="rem-dt" />
+    <div class="modal-btns">
+      <button class="modal-btn primary" onclick="saveReminder('${id}')">Guardar</button>
+      <button class="modal-btn secondary" onclick="closeModal()">Cancelar</button>
+    </div>
+  `);
+}
+
+function saveReminder(id) {
+  const dt = document.getElementById('rem-dt').value;
+  if (!dt) return;
+  const entry = data.entries.find(e => e.id === id);
+  if (entry) { entry.reminder = dt; entry.reminderDone = false; saveData(); }
+  closeModal(); renderFolderEntries(); showToast('⏰ Recordatorio guardado');
+}
+
+function speakEntry(id) {
+  const e = data.entries.find(x => x.id === id);
+  if (e && 'speechSynthesis' in window) { const u = new SpeechSynthesisUtterance(e.text); u.lang='es-AR'; speechSynthesis.speak(u); }
+}
+
+// ADD ENTRY
+function openAddEntry() {
+  currentEntryAttachments = [];
+  openModal('➕ Nueva Entrada', `
+    <div class="modal-label">Texto</div>
+    <textarea class="modal-textarea" id="new-entry-text" placeholder="Escribí o dictá..."></textarea>
+    <div style="display:flex;gap:6px;margin-bottom:9px;">
+      <button class="voice-btn" onclick="startVoice('new-entry-text','modal-voice')" id="modal-voice">🎤 Voz</button>
+    </div>
+    <div class="modal-label">Adjuntar</div>
+    <div class="attach-row">
+      <button class="attach-btn" onclick="document.getElementById('attach-photo-input').click()">📷 Foto</button>
+      <button class="attach-btn" onclick="document.getElementById('attach-file-input').click()">📄 Archivo</button>
+      <button class="attach-btn" onclick="addLinkAttach()">🔗 Link</button>
+    </div>
+    <div id="attach-preview-modal"></div>
+    <div class="modal-label">Recordatorio (opcional)</div>
+    <input type="datetime-local" class="modal-input" id="new-entry-rem" />
+    <div class="modal-btns">
+      <button class="modal-btn primary" onclick="saveNewEntry()">Guardar 💾</button>
+      <button class="modal-btn secondary" onclick="closeModal()">Cancelar</button>
+    </div>
+  `);
+}
+
+function addLinkAttach() {
+  const url = prompt('Pegá el link:');
+  if (!url) return;
+  currentEntryAttachments.push({ type:'link', url, name: url.slice(0,40) });
+  updateAttachPreviewModal();
+}
+
+function handlePhotoAttach(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    currentEntryAttachments.push({ type:'image', data: e.target.result, name: file.name });
+    updateAttachPreviewModal();
+  };
+  reader.readAsDataURL(file);
+  event.target.value = '';
+}
+
+function handleFileAttach(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  currentEntryAttachments.push({ type:'file', name: file.name });
+  updateAttachPreviewModal();
+  event.target.value = '';
+}
+
+function updateAttachPreviewModal() {
+  const prev = document.getElementById('attach-preview-modal');
+  if (!prev) return;
+  prev.innerHTML = '<div class="attach-preview">' + currentEntryAttachments.map((a,i) => {
+    if (a.type==='image') return `<div class="attach-item"><img src="${a.data}" /><span onclick="removeAttach(${i})">✕</span></div>`;
+    return `<div class="attach-item">${a.type==='link'?'🔗':'📄'} ${a.name} <span onclick="removeAttach(${i})" style="cursor:pointer;">✕</span></div>`;
+  }).join('') + '</div>';
+}
+
+function removeAttach(i) { currentEntryAttachments.splice(i,1); updateAttachPreviewModal(); }
+
+function saveNewEntry() {
+  const text = document.getElementById('new-entry-text').value.trim();
+  if (!text) { showToast('⚠️ Escribí algo primero'); return; }
+  const rem = document.getElementById('new-entry-rem').value;
+  saveData(true);
+  const entry = { id: Date.now().toString(), folder: currentFolder, text, date: new Date().toISOString(),
+    reminder: rem||null, reminderDone: false, link: null, attachments: [...currentEntryAttachments] };
+  if (!data.entries) data.entries = [];
+  data.entries.push(entry); saveData();
+  closeModal(); renderFolderEntries(); renderFolders();
+  const fname = getAllFolders().find(f => f.id===currentFolder)?.name || currentFolder;
+  showToast('✅ Guardado en '+fname);
+}
+
+// ADD FOLDER
+function openAddFolder() {
+  openModal('📁 Nueva Carpeta', `
+    <div class="modal-label">Nombre de la carpeta</div>
+    <input type="text" class="modal-input" id="new-folder-name" placeholder="Ej: Mis recetas" />
+    <div class="modal-label">Ícono (emoji)</div>
+    <input type="text" class="modal-input" id="new-folder-icon" placeholder="📁" maxlength="2" />
+    <div class="modal-btns">
+      <button class="modal-btn primary" onclick="saveNewFolder()">Crear carpeta</button>
+      <button class="modal-btn secondary" onclick="closeModal()">Cancelar</button>
+    </div>
+  `);
+}
+
+function saveNewFolder() {
+  const name = document.getElementById('new-folder-name').value.trim();
+  const icon = document.getElementById('new-folder-icon').value.trim() || '📁';
+  if (!name) { showToast('⚠️ Escribí un nombre'); return; }
+  const id = 'custom_' + Date.now();
+  if (!data.customFolders) data.customFolders = [];
+  data.customFolders.push({ id, name, icon });
+  saveData(); closeModal(); renderFolders(); renderFolderSelect();
+  showToast('📁 Carpeta creada');
+}
+
+// QUICK CAPTURE
+async function saveQuick() {
+  const text = document.getElementById('qc-text').value.trim();
+  if (!text) { showToast('⚠️ Escribí algo primero'); return; }
+  const folderSel = document.getElementById('qc-folder-select').value;
+  let targetFolder = folderSel;
+  if (!targetFolder) {
+    const apikey = data.config?.apikey;
+    if (apikey) { showToast('🤖 Clasificando...'); targetFolder = await classifyWithIA(text, apikey); }
+    else targetFolder = 'hogar';
+  }
+  saveData(true);
+  const entry = { id:Date.now().toString(), folder:targetFolder, text, date:new Date().toISOString(), reminder:null, reminderDone:false, link:null, attachments:[] };
+  if (!data.entries) data.entries = [];
+  data.entries.push(entry); saveData();
+  document.getElementById('qc-text').value = '';
+  renderFolders();
+  const fname = getAllFolders().find(f => f.id===targetFolder)?.name || targetFolder;
+  showToast('✅ Guardado en '+fname);
+}
+
+async function classifyWithIA(text, apikey) {
+  const folderList = getAllFolders().map(f => f.id+': '+f.name).join(', ');
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method:'POST',
+      headers:{'Content-Type':'application/json','x-api-key':apikey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+      body:JSON.stringify({ model:'claude-haiku-4-5-20251001', max_tokens:30,
+        messages:[{role:'user',content:`Clasificá en UNA carpeta: ${folderList}. Texto: "${text}". Respondé SOLO el id.`}] })
+    });
+    const d = await res.json();
+    const r = d.content?.[0]?.text?.trim().toLowerCase();
+    if (r && getAllFolders().find(f => f.id===r)) return r;
+  } catch(e) {}
+  return 'hogar';
+}
+
+// IA PANEL
+function showIAPanel() { document.getElementById('ia-panel').classList.add('open'); document.getElementById('ia-response').style.display='none'; }
+function closeIAPanel() { document.getElementById('ia-panel').classList.remove('open'); stopIAVoice(); }
+
+function startVoiceIA() {
+  if (iaVoiceActive) { stopIAVoice(); return; }
+  if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) { showToast('⚠️ Tu navegador no soporta voz'); return; }
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  iaVoiceRec = new SR();
+  iaVoiceRec.lang = 'es-AR'; iaVoiceRec.continuous = true; iaVoiceRec.interimResults = false;
+  iaVoiceRec.onstart = () => { iaVoiceActive=true; document.getElementById('ia-voice-btn').classList.add('recording'); };
+  iaVoiceRec.onend = () => { iaVoiceActive=false; document.getElementById('ia-voice-btn').classList.remove('recording'); };
+  iaVoiceRec.onresult = e => {
+    const t = e.results[e.results.length-1][0].transcript;
+    const inp = document.getElementById('ia-input');
+    inp.value += (inp.value?' ':'')+t;
+  };
+  iaVoiceRec.start();
+}
+
+function stopIAVoice() { if (iaVoiceRec) { iaVoiceRec.stop(); iaVoiceRec=null; } iaVoiceActive=false; document.getElementById('ia-voice-btn').classList.remove('recording'); }
+
+async function sendToIA() {
+  const text = document.getElementById('ia-input').value.trim();
+  if (!text) { showToast('⚠️ Escribí algo'); return; }
+  const apikey = data.config?.apikey;
+  if (!apikey) { showToast('⚠️ Falta la API Key en Configuración'); return; }
+  const respEl = document.getElementById('ia-response');
+  respEl.style.display='block';
+  respEl.innerHTML='<span class="dot-anim">.</span><span class="dot-anim">.</span><span class="dot-anim">.</span>';
+  const folderList = getAllFolders().map(f => f.id+' ('+f.name+')').join(', ');
+  const recentEntries = (data.entries||[]).slice(-15).map(e=>'['+e.folder+'] '+e.text).join('\n');
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method:'POST',
+      headers:{'Content-Type':'application/json','x-api-key':apikey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+      body:JSON.stringify({ model:'claude-sonnet-4-20250514', max_tokens:400,
+        system:`Sos el asistente de Nueva Vida. Hablás en español rioplatense informal. Carpetas: ${folderList}. Entradas recientes: ${recentEntries||'ninguna'}. Si el usuario quiere guardar algo respondé JSON: {"action":"save","folder":"id","text":"texto"}. Si es consulta, respondé normal.`,
+        messages:[{role:'user',content:text}] })
+    });
+    const d = await res.json();
+    const reply = d.content?.[0]?.text||'Sin respuesta';
+    try {
+      const json = JSON.parse(reply);
+      if (json.action==='save'&&json.folder&&json.text) {
+        saveData(true);
+        const entry = { id:Date.now().toString(), folder:json.folder, text:json.text, date:new Date().toISOString(), reminder:null, reminderDone:false, link:null, attachments:[] };
+        data.entries.push(entry); saveData(); renderFolders();
+        const fname = getAllFolders().find(f=>f.id===json.folder)?.name||json.folder;
+        respEl.innerHTML=`✅ Guardado en <strong>${fname}</strong>:<br>"${json.text}"`;
+        document.getElementById('ia-input').value=''; return;
+      }
+    } catch(e) {}
+    respEl.innerHTML=reply.replace(/\n/g,'<br>');
+  } catch(e) { respEl.innerHTML='❌ Error al conectar. Verificá la API Key.'; }
+}
+
+// BÚSQUEDA
+function doSearch() {
+  const query = document.getElementById('search-input').value.trim().toLowerCase();
+  const container = document.getElementById('search-results');
+  container.innerHTML='';
+  if (!query) return;
+  const results = (data.entries||[]).filter(e=>e.text.toLowerCase().includes(query)).reverse();
+  if (results.length===0) { container.innerHTML=`<div class="empty-state"><div class="icon">🔍</div><p>No encontré nada para "${query}"</p></div>`; return; }
+  results.forEach(e => {
+    const f = getAllFolders().find(x=>x.id===e.folder);
+    const dotColor = f?FOLDER_COLORS[f.color]||'#6c63ff':'#6c63ff';
+    const card = document.createElement('div');
+    card.className='entry-card';
+    const highlighted = e.text.replace(new RegExp(query,'gi'),m=>`<mark style="background:var(--accent);color:white;border-radius:2px;padding:0 2px">${m}</mark>`);
+    card.innerHTML=`<div class="entry-top"><div class="entry-dot" style="background:${dotColor}"></div><div class="entry-text">${highlighted}</div></div><div class="entry-meta"><span>${f?f.icon+' '+f.name:e.folder}</span><span>${formatDate(e.date)}</span></div><div class="entry-actions"><button class="entry-btn" onclick="openFolder('${e.folder}')">📂 Ir a carpeta</button></div>`;
+    container.appendChild(card);
+  });
+}
+document.getElementById('search-input').addEventListener('keypress',e=>{if(e.key==='Enter')doSearch();});
+
+// CLIMA
+function initClima() { updateSolStatus(); renderClimaTasks(); }
+function updateSolStatus() {
+  const h = new Date().getHours(); const now = new Date();
+  const badge = document.getElementById('sol-badge'); const consejo = document.getElementById('sol-consejo');
+  if (!badge) return;
+  const on = data.config?.solProtect!==false;
+  if (!on) { badge.className='sol-badge safe'; badge.textContent='✅ Alerta solar desactivada'; consejo.textContent=''; return; }
+  const time = `${h}:${String(now.getMinutes()).padStart(2,'0')} hs`;
+  if (h>=10&&h<16) { badge.className='sol-badge danger'; badge.textContent='🚨 PELIGRO — Sol intenso ahora'; consejo.textContent=`Son las ${time}. Máxima radiación UV. Evitá salir sin protección total.`; }
+  else if ((h>=8&&h<10)||(h>=16&&h<18)) { badge.className='sol-badge warning'; badge.textContent='⚠️ ATENCIÓN — Sol moderado'; consejo.textContent=`Son las ${time}. Usá protector y sombrero si salís.`; }
+  else { badge.className='sol-badge safe'; badge.textContent='✅ SEGURO — Podés salir'; consejo.textContent=`Son las ${time}. Hora segura para actividades al aire libre.`; }
+}
+function renderClimaTasks() {
+  const c = document.getElementById('clima-tasks'); const ic = document.getElementById('indoor-tasks');
+  if (!c||!ic) return;
+  c.innerHTML=''; (data.climaTasks||[]).forEach((t,i)=>c.appendChild(makeTaskEl(t,i,'clima')));
+  ic.innerHTML=''; (data.indoorTasks||[]).forEach((t,i)=>ic.appendChild(makeTaskEl(t,i,'indoor')));
+}
+function makeTaskEl(t,i,type) {
+  const div=document.createElement('div'); div.className='task-item'+(t.done?' done':'');
+  div.innerHTML=`<div class="task-check">${t.done?'✓':''}</div><div class="task-text">${escapeHtml(t.text)}</div><button class="entry-btn del" onclick="deleteTask(${i},'${type}')" style="font-size:12px;padding:4px 7px;">🗑️</button>`;
+  div.querySelector('.task-check').onclick=()=>toggleTask(i,type);
+  div.querySelector('.task-text').onclick=()=>toggleTask(i,type);
+  return div;
+}
+function toggleTask(i,type) { const a=type==='clima'?data.climaTasks:data.indoorTasks; if(a[i]){a[i].done=!a[i].done;saveData();renderClimaTasks();} }
+function deleteTask(i,type) { if(type==='clima')data.climaTasks.splice(i,1);else data.indoorTasks.splice(i,1);saveData();renderClimaTasks(); }
+function addClimaTask() { const inp=document.getElementById('new-task-input'); const t=inp.value.trim(); if(!t)return; if(!data.climaTasks)data.climaTasks=[]; data.climaTasks.push({text:t,done:false}); saveData();inp.value='';renderClimaTasks(); }
+function addIndoorTask() { const inp=document.getElementById('new-indoor-input'); const t=inp.value.trim(); if(!t)return; if(!data.indoorTasks)data.indoorTasks=[]; data.indoorTasks.push({text:t,done:false}); saveData();inp.value='';renderClimaTasks(); }
+
+// SEÑALES
+function renderSignals() {
+  const cont=document.getElementById('signals-list'); if(!cont)return;
+  cont.innerHTML='';
+  const signals=(data.signals||[]).slice().reverse();
+  if(signals.length===0){cont.innerHTML=`<div class="empty-state"><div class="icon">🔮</div><p>Registrá tus señales y sincronías aquí.</p></div>`;return;}
+  signals.forEach((s,i)=>{
+    const card=document.createElement('div'); card.className='signal-card';
+    card.innerHTML=`<div class="signal-type">${s.type||'Señal'}</div><div class="signal-text">${escapeHtml(s.text)}</div><div class="signal-date">${formatDate(s.date)}</div><div class="entry-actions" style="margin-top:7px;"><button class="entry-btn del" onclick="deleteSignal(${data.signals.length-1-i})">🗑️ Borrar</button></div>`;
+    cont.appendChild(card);
+  });
+}
+function openAddSignal() {
+  openModal('✨ Nueva Señal',`
+    <div class="modal-label">Tipo</div>
+    <select class="modal-input" id="sig-type"><option value="Número repetido">🔢 Número repetido</option><option value="Sueño">🌙 Sueño</option><option value="Sincronía">✨ Sincronía</option><option value="Intuición">💫 Intuición</option><option value="Señal">🔮 Señal</option><option value="Otro">🌟 Otro</option></select>
+    <div class="modal-label">Descripción</div>
+    <textarea class="modal-textarea" id="sig-text" placeholder="Describí lo que pasó..."></textarea>
+    <button class="voice-btn" onclick="startVoice('sig-text','sig-voice')" id="sig-voice" style="margin-bottom:9px;">🎤 Voz</button>
+    <div class="modal-btns"><button class="modal-btn primary" onclick="saveSignal()">Guardar ✨</button><button class="modal-btn secondary" onclick="closeModal()">Cancelar</button></div>
+  `);
+}
+function saveSignal() { const type=document.getElementById('sig-type').value; const text=document.getElementById('sig-text').value.trim(); if(!text){showToast('⚠️ Escribí algo');return;} if(!data.signals)data.signals=[]; data.signals.push({type,text,date:new Date().toISOString()}); saveData();closeModal();renderSignals();showToast('✨ Señal guardada'); }
+function deleteSignal(i) { if(!confirm('¿Borrar esta señal?'))return; data.signals.splice(i,1);saveData();renderSignals(); }
+
+// MEJORAS
+function renderMejoras() {
+  const cont=document.getElementById('mejoras-list'); if(!cont)return;
+  cont.innerHTML='';
+  const mejoras=(data.mejoras||[]).slice().reverse();
+  if(mejoras.length===0){cont.innerHTML=`<div class="empty-state"><div class="icon">🛠️</div><p>Registrá ideas para mejorar la app.</p></div>`;return;}
+  mejoras.forEach((m,i)=>{
+    const card=document.createElement('div'); card.className='mejora-card';
+    card.innerHTML=`<div class="mejora-tag ${m.done?'done':'pending'}">${m.done?'✅ Hecho':'⏳ Pendiente'}</div><div class="mejora-title">${escapeHtml(m.title)}</div>${m.desc?`<div class="mejora-desc">${escapeHtml(m.desc)}</div>`:''}<div class="entry-actions" style="margin-top:7px;"><button class="entry-btn sav" onclick="toggleMejora(${data.mejoras.length-1-i})">${m.done?'↩️ Desmarcar':'✅ Hecho'}</button><button class="entry-btn del" onclick="deleteMejora(${data.mejoras.length-1-i})">🗑️</button></div>`;
+    cont.appendChild(card);
+  });
+}
+function openAddMejora() {
+  openModal('🛠️ Nueva Mejora',`
+    <input type="text" class="modal-input" id="mej-title" placeholder="Título de la mejora" />
+    <textarea class="modal-textarea" id="mej-desc" placeholder="Descripción (opcional)..."></textarea>
+    <div class="modal-btns"><button class="modal-btn primary" onclick="saveMejora()">Guardar 🛠️</button><button class="modal-btn secondary" onclick="closeModal()">Cancelar</button></div>
+  `);
+}
+function saveMejora() { const title=document.getElementById('mej-title').value.trim(); if(!title){showToast('⚠️ Escribí un título');return;} const desc=document.getElementById('mej-desc').value.trim(); if(!data.mejoras)data.mejoras=[]; data.mejoras.push({title,desc,done:false,date:new Date().toISOString()}); saveData();closeModal();renderMejoras();showToast('🛠️ Mejora guardada'); }
+function toggleMejora(i) { if(data.mejoras[i]){data.mejoras[i].done=!data.mejoras[i].done;saveData();renderMejoras();} }
+function deleteMejora(i) { if(!confirm('¿Borrar?'))return; data.mejoras.splice(i,1);saveData();renderMejoras(); }
+
+// CONFIG
+function loadConfig() {
+  const c=data.config||{};
+  const ak=document.getElementById('cfg-apikey'); const nm=document.getElementById('cfg-name'); const cy=document.getElementById('cfg-city');
+  if(ak)ak.value=c.apikey||''; if(nm)nm.value=c.name||'Gastón'; if(cy)cy.value=c.city||'Mar del Plata';
+  updateSolBtn();
+  const sub=document.getElementById('header-sub');
+  if(sub&&c.name)sub.textContent='Hola, '+c.name+' 👋';
+}
+function saveConfig() {
+  if(!data.config)data.config={};
+  const ak=document.getElementById('cfg-apikey'); const nm=document.getElementById('cfg-name'); const cy=document.getElementById('cfg-city');
+  if(ak)data.config.apikey=ak.value; if(nm){data.config.name=nm.value;} if(cy)data.config.city=cy.value;
+  saveData(); loadConfig();
+}
+function toggleSolProtect() { if(!data.config)data.config={}; data.config.solProtect=!data.config.solProtect; saveData();updateSolBtn();updateSolStatus(); }
+function updateSolBtn() { const btn=document.getElementById('cfg-sol-btn'); if(!btn)return; const on=data.config?.solProtect!==false; btn.textContent=on?'Activada ✓':'Desactivada'; btn.style.color=on?'var(--green)':'var(--text2)'; }
+
+// BACKUP
+function exportBackup() {
+  const json=JSON.stringify(data,null,2);
+  const blob=new Blob([json],{type:'application/json'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a'); a.href=url; a.download='NuevaVida_backup_'+new Date().toISOString().slice(0,10)+'.json'; a.click(); URL.revokeObjectURL(url);
+  showToast('📤 Backup exportado');
+}
+function importBackup(event) {
+  const file=event.target.files[0]; if(!file)return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    try {
+      const imported=JSON.parse(e.target.result);
+      const existingIds=new Set((data.entries||[]).map(x=>x.id)); let added=0;
+      (imported.entries||[]).forEach(entry=>{if(!existingIds.has(entry.id)){data.entries.push(entry);added++;}});
+      const existingSigDates=new Set((data.signals||[]).map(x=>x.date));
+      (imported.signals||[]).forEach(s=>{if(!existingSigDates.has(s.date))data.signals.push(s);});
+      saveData();renderFolders();renderSignals();renderMejoras();
+      showToast(`✅ Importado: ${added} entradas nuevas`);
+    } catch(err){showToast('❌ Archivo inválido');}
+  };
+  reader.readAsText(file); event.target.value='';
+}
+
+// RESTORE POINTS
+function showRestorePoints() {
+  const points=data.restorePoints||[];
+  if(points.length===0){showToast('No hay puntos de restauración todavía');return;}
+  let html='';
+  points.forEach((p,i)=>{
+    html+=`<div class="restore-item"><div class="restore-info"><div class="restore-date">${formatDate(p.date)}</div><div class="restore-desc">${p.desc}</div></div><button class="config-btn" onclick="restorePoint(${i})">Restaurar</button></div>`;
+  });
+  openModal('🔄 Puntos de Restauración',html+`<div class="modal-btns" style="margin-top:12px;"><button class="modal-btn secondary" onclick="closeModal()">Cerrar</button></div>`);
+}
+function restorePoint(i) {
+  if(!confirm('¿Restaurar a este punto? Se perderán los cambios posteriores.'))return;
+  try {
+    const snap=JSON.parse(data.restorePoints[i].snapshot);
+    data=snap; saveData();closeModal();renderFolders();renderSignals();renderMejoras();renderClimaTasks();loadConfig();
+    showToast('✅ Datos restaurados');
+  } catch(e){showToast('❌ Error al restaurar');}
+}
+
+function confirmDeleteAll() {
+  openModal('⚠️ Borrar TODO',`
+    <p style="color:var(--text2);margin-bottom:14px;line-height:1.5;">Esto borrará <strong style="color:var(--red)">absolutamente todo</strong>. No se puede deshacer.</p>
+    <p style="margin-bottom:10px;font-weight:700;">Escribí <span style="color:var(--red)">BORRAR</span> para confirmar:</p>
+    <input type="text" class="modal-input" id="confirm-delete-input" placeholder="BORRAR" />
+    <div class="modal-btns"><button class="modal-btn danger" onclick="executeDeleteAll()">Borrar TODO</button><button class="modal-btn secondary" onclick="closeModal()">Cancelar</button></div>
+  `);
+}
+function executeDeleteAll() {
+  if(document.getElementById('confirm-delete-input').value!=='BORRAR'){showToast('⚠️ Escribí BORRAR exactamente');return;}
+  localStorage.removeItem(STORAGE_KEY);
+  data={entries:[],climaTasks:[],indoorTasks:[],signals:[],mejoras:[],restorePoints:[],customFolders:[],config:{apikey:'',name:'Gastón',city:'Mar del Plata',solProtect:true}};
+  saveData();closeModal();renderFolders();renderSignals();renderMejoras();showToast('🗑️ Datos borrados');
+}
+
+// RECORDATORIOS
+function checkReminders() {
+  const now=new Date();
+  (data.entries||[]).forEach(e=>{
+    if(e.reminder&&!e.reminderDone){
+      const rem=new Date(e.reminder);
+      if(rem<=now){e.reminderDone=true;saveData();
+        if('Notification'in window&&Notification.permission==='granted')new Notification('⏰ Nueva Vida',{body:e.text});
+        else showToast('⏰ Recordatorio: '+e.text.slice(0,40));
+      }
+    }
+  });
+}
+
+// MODAL
+function openModal(title,bodyHtml){document.getElementById('modal-title').textContent=title;document.getElementById('modal-body').innerHTML=bodyHtml;document.getElementById('modal-overlay').classList.add('open');}
+function closeModal(){document.getElementById('modal-overlay').classList.remove('open');}
+document.getElementById('modal').addEventListener('click',e=>e.stopPropagation());
+
+// VOZ
+function startVoice(targetId, btnId) {
+  if(!('webkitSpeechRecognition'in window)&&!('SpeechRecognition'in window)){showToast('⚠️ Tu navegador no soporta voz');return;}
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  const rec=new SR(); rec.lang='es-AR'; rec.interimResults=false; rec.maxAlternatives=1;
+  const btn=document.getElementById(btnId);
+  rec.onstart=()=>{if(btn)btn.classList.add('recording');};
+  rec.onend=()=>{if(btn)btn.classList.remove('recording');};
+  rec.onresult=e=>{
+    const t=e.results[0][0].transcript;
+    const el=document.getElementById(targetId);
+    if(el){if(el.tagName==='TEXTAREA'||el.tagName==='INPUT')el.value+=(el.value?' ':'')+t;}
+  };
+  rec.onerror=()=>{if(btn)btn.classList.remove('recording');showToast('⚠️ Error de micrófono');};
+  rec.start();
+}
+
+// UTILS
+function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
+function formatDate(iso){if(!iso)return'';try{const d=new Date(iso);return d.toLocaleDateString('es-AR',{day:'2-digit',month:'2-digit',year:'numeric'})+' '+d.toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'});}catch(e){return iso;}}
+function escapeHtml(text){if(!text)return'';return text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');}
+
+init();
+</script>
+</body>
+</html>
